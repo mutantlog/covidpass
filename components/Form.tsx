@@ -69,15 +69,20 @@ function Form(): JSX.Element {
     // Currently selected QR Code / File. Only one of them is set.
     const [qrCode, setQrCode] = useState<Result>(undefined);
     const [file, setFile] = useState<File>(undefined);
+    const [file2, setFile2] = useState<File>(undefined);
+
     const [payloadBody, setPayloadBody] = useState<PayloadBody>(undefined);
 
     const [saveLoading, setSaveLoading] = useState<boolean>(false);
     const [fileLoading, setFileLoading] = useState<boolean>(false);
+    const [file2Loading, setFile2Loading] = useState<boolean>(false);
 
     const [generated, setGenerated] = useState<boolean>(false);         // this flag represents the file has been used to generate a pass
 
     const [isDisabledAppleWallet, setIsDisabledAppleWallet] = useState<boolean>(false);
     const [isDisabledGooglePay, setIsDisabledGooglePay] = useState<boolean>(false);
+    const [isDisabledFastLink, setIsDisabledFastLink] = useState<boolean>(true);
+
     const [addErrorMessages, _setAddErrorMessages] = useState<Array<string>>([]);
     const [fileErrorMessages, _setFileErrorMessages] = useState<Array<string>>([]);
 
@@ -112,8 +117,14 @@ function Form(): JSX.Element {
     // File Input ref
     const inputFile = useRef<HTMLInputElement>(undefined)
 
+    const inputFile2 = useRef<HTMLInputElement>(undefined)
+
+
     // Add event listener to listen for file change events
     useEffect(() => {
+
+        let payloadBody;
+
         if (inputFile && inputFile.current) {
             inputFile.current.addEventListener('change', async () => {
                 let selectedFile = inputFile.current.files[0];
@@ -127,56 +138,51 @@ function Form(): JSX.Element {
                     deleteAddErrorMessage(t('errors:'.concat('noFileOrQrCode')));
                     _setFileErrorMessages([]);
                     checkBrowserType();
-                    const payloadBody = await getPayload(selectedFile);
-
-                    //TODO: feature flagging
-
-                    // await createDataUrlForDisplay(selectedFile);
+                    payloadBody = await getPayload(selectedFile);
+                    await storeFileToLocalStorageBase64('receipt', selectedFile);
                     await renderPhoto(payloadBody);
                 }
             });
         }
+        if (inputFile2 && inputFile2.current) {
+            inputFile2.current.addEventListener('change', async () => {
+                let selectedFile2 = inputFile2.current.files[0];
+                if (selectedFile2) {
+                    setFile2Loading(true);
+                    setFile2(selectedFile2);
+                    await storeFileToLocalStorageBase64('extra', selectedFile2);
+                    payloadBody.extraUrl = 'extra';
+                    setFile2Loading(false);
+                }
+            });
+        }
         checkBrowserType();
-    }, [inputFile])
+    }, [inputFile, inputFile2])
 
-    async function createDataUrlForDisplay(file: File) {
+    async function storeFileToLocalStorageBase64(key: string, file: File) {
         
-        if (window.localStorage) {
+        if (window.localStorage && file.type.includes('application/pdf')) {
 
             // https://stackoverflow.com/a/56738510/2789065
 
+            console.log('storing buffer ' + file.type);
             const buffer = Buffer.from(await new Response(file).arrayBuffer());
             let dataUrl = `data:${file.type};base64,${buffer.toString("base64")}`;
-            localStorage.setItem('pdfDataUrl', dataUrl);
+            localStorage.setItem(key, dataUrl);
 
         }
-    }
-
-    async function showPDF() {
-        let dataUrl = localStorage.getItem('pdfDataUrl');
-        // console.log(dataUrl)
-        let script = `function debugBase64(base64URL){
-                    var win = window.open();
-                    win.document.write('<iframe src="' + base64URL  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
-                }
-                debugBase64('${dataUrl}');
-            `;
-
-        let hrefValue = `javascript:${script};`
-        document.getElementById('mylink').setAttribute('href', hrefValue);
-
     }
 
     async function getPayload(file) : Promise<PayloadBody> {
         try {
             const payload = await getPayloadBodyFromFile(file);
-
-            //TODO: feature flagging
             
-            // const buffer = Buffer.from(await new Response(file).arrayBuffer());
-            // let dataUrl = `data:${file.type};base64,${buffer.toString("base64")}`;
+            payload.dataUrl = "receipt";
+            console.log(file);
 
-            // payload.dataUrl = dataUrl;
+            if (file2) {
+                payload.extraUrl = file2.name;
+            }
 
             setPayloadBody(payload);
             setFileLoading(false);
@@ -227,6 +233,11 @@ function Form(): JSX.Element {
         document.getElementById('shc-image-header').hidden = true;
 
         inputFile.current.click();
+    }
+
+    async function showFile2Dialog() {
+        inputFile2.current.click();
+
     }
 
     async function goToFAQ(e : any) {
@@ -487,7 +498,7 @@ function Form(): JSX.Element {
         //     setAddErrorMessage('Sorry. Apple Wallet pass can be added using Safari or Chrome only.');
         //     setIsDisabledAppleWallet(true);
         // }
-
+        
         const uaIsiOS15 = getUA.includes('15_');
         if (isIOS && ((!osVersion.startsWith('15')) && !uaIsiOS15)) {
             const message = `Not iOS15 error: osVersion=${osVersion} UA=${getUA}`;
@@ -497,6 +508,12 @@ function Form(): JSX.Element {
             setIsDisabledAppleWallet(true);
             return;
         } 
+
+        //TODO: feature flagging
+
+        // if (isIOS || isMacOs) {
+        //     setIsDisabledFastLink(false);
+        // }
 
         if (isMacOs) {
             setAddErrorMessage('iOSReminder')
@@ -592,7 +609,54 @@ function Form(): JSX.Element {
                     </div>
                 }/>
 
-                {showDoseOption && <Card step="3" heading={'Choose dose number'} content={
+                {!isDisabledFastLink && <Card step="3" heading='(Optional) Link a photo to your wallet pass' content={
+                    <div className="space-y-5">
+                        <p>The photo will be saved in your browser (as local & private storage). Your wallet pass will have a link to it for quick showing.</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-center justify-start">
+                            <button
+                                type="button"
+                                onClick={showFile2Dialog}
+                                className="h-20 bg-green-600 hover:bg-gray-700 text-white font-semibold rounded-md">
+                                {t('index:openFile')}
+                            </button>
+                            <div id="spin2" className={file2Loading ? undefined : "hidden"}>
+                                <svg className="animate-spin h-5 w-5 ml-4" viewBox="0 0 24 24">
+                                    <circle className="opacity-0" cx="12" cy="12" r="10" stroke="currentColor"
+                                            strokeWidth="4"/>
+                                    <path className="opacity-75" fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <input type='file'
+                               id='file2'
+                               accept="application/pdf,.png,.jpg,.jpeg,.gif,.webp"
+                               ref={inputFile2}
+                               style={{display: 'none'}}
+                        />
+
+                        {(file2) &&
+                        <div className="flex items-center space-x-1">
+                            <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                            <span className="w-full truncate">
+                                {
+                                    file2 && file2.name
+                                }
+                            </span>
+                        </div>
+                        }
+                        {fileErrorMessages.map((message, i) =>
+                            <Alert message={message} key={'error-' + i} type="error" />
+                        )}
+                    </div>
+                }/>
+                }
+
+                {showDoseOption && <Card step={isDisabledFastLink ? '4': '3'} heading={'Choose dose number'} content={
                     <div className="space-y-5">
                         <p>
                             {t('index:formatChange')}
@@ -615,7 +679,7 @@ function Form(): JSX.Element {
                     </div>
                 } />}
 
-                <Card step={showDoseOption ? '4' : '3'} heading={t('index:addToWalletHeader')} content={
+                <Card step={showDoseOption ? (!isDisabledFastLink ? '5' : '4') : (!isDisabledFastLink ? '4': '3')} heading={t('index:addToWalletHeader')} content={
                     <div className="space-y-5">
                         <div>
                             <ul className="list-none">

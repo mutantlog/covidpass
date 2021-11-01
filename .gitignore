@@ -34,3 +34,5 @@ yarn-error.log*
 .idea
 *.local
 *.local
+.env.local
+build2.sh

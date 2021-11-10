@@ -86,6 +86,17 @@ export const issuers = [
     ]
   },
   {
+    id: "ca.sk2",
+    display: "Saskatchewan",
+    iss: "https://commons.ehealthsask.ca",
+    keys: [
+      { kid: "RBvL32MBD4FXqXKE86HU9Nnjp0hADhqztOXb-M_mP_k",
+        alg: "ES256", kty: "EC", crv: "P-256", use: "sig",
+        x: "p9Rf7Wh1_vCMTK4i4XLQFI6_LR0ZhISQVJ2PAy2yEdA",
+        y: "ai71citYuk72ldpGiwRZ0NfZGJPzKZBVulaUv_74IjY" },
+    ]
+  },
+  {
 	id: "ca.ab",
     display: "Alberta",
 	iss: "https://covidrecords.alberta.ca/smarthealth/issuer",
@@ -347,7 +358,18 @@ export const issuers = [
         x: "TW2mjeWs2JRBDblltiq2W00M_Q3gXnCl5FlLKIKV3oQ",
         y: "sbraf7XcT2iH7uLUtH_grf5eVF7LltpVb9z8E31WGj4" },
     ]
-  }
+  },
+  {
+    id: "ca.af",
+    display: "Canadian Armed Forces",
+    iss: "https://pvc.cloud.forces.gc.ca",
+    keys: [
+      { kid: "pa8pdfDR9-cuqJUYFqlSFudijWY-YwZ6ktBNH-wWaqQ",
+        alg: "ES256", kty: "EC", crv: "P-256", use: "sig",
+        x: "DH8CQFLdDRdpJE6p105bkTdbu91rGPQyQ2BUCyyoNI8",
+        y: "NMHkeXhTZzwMbZAKucJ987PKSM7PVELpKhKien-ssq4" },
+    ]
+  },
 ];
 
 // Check for updates above at https://files.ontario.ca/apps/verify/verifyRulesetON.json

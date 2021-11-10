@@ -90,6 +90,7 @@ function Index(): JSX.Element {
                                 <div className="region-card">Québec</div>
                                 <div className="region-card">Saskatchewan</div>
                                 <div className="region-card">Yukon</div>
+                                <div className="region-card">Canadian Armed Forces</div>
                             </div>
                             {/* <div className="region-section">
                                 <div className="region-card">California</div>
@@ -107,13 +108,13 @@ function Index(): JSX.Element {
                                 <div className="region-card">Virginia</div>
                             </div> */}
                             <b>{displayPassCount}</b><br/><br/>
-                            Nov 1 morning update: 
+                            Nov 9 update:
                             <br />
                             <br />
                             <ul className="list-decimal list-outside" style={{ marginLeft: '20px' }}>
+                                <li>Support for Canadian Armed Forces federal-standard QR codes</li>
                                 <li><b>New for iPhone users: You can now quickly access the original PDF receipt from your wallet pass</b> (by tapping ... on the top right to see details). If you have already created a Wallet pass, you can delete the old one and re-import to get this convenience feature.</li>
                                 <li>Thank you very much to the Government of Nunavut for proactively reaching out to us to allow us to add support for Nunavummiut!</li>
-                                <li>Support for newly-released Manitoba federal-standard QR codes</li>
                                 <li>(Often-requested) support added for importing proof-of-vaccination into <b>Google Pay</b> on Android 8.1+</li>
                                 <li>You can now scan QR codes directly off of paper or a screen with your camera, eliminating the need to upload PDFs or pictures</li>
                                 <li>Support added for importing QR codes from images as well as from PDFs</li>

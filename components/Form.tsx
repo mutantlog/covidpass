@@ -42,6 +42,7 @@ const getTheme = () => {
 const options = [
     { label: 'Alberta', value: 'https://covidrecords.alberta.ca/form'},
     { label: 'British Columbia', value: 'https://www.healthgateway.gov.bc.ca/vaccinecard'},
+    { label: 'Canadian Armed Forces', value: 'https://www.canada.ca/en/department-national-defence/campaigns/covid-19/covid-19-vaccines-for-canadian-armed-forces-members.html#proof'},
     { label: 'Manitoba', value: 'https://www.gov.mb.ca/covid19/vaccine/immunizationrecord/residents.html'},
     { label: 'Newfoundland and Labrador', value: 'https://vaccineportal.nlchi.nl.ca/'},
     { label: 'Northwest Territories', value: 'https://www.gov.nt.ca/covid-19/en/request/proof-vaccination'},

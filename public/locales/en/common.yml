@@ -1,5 +1,5 @@
 title: Vaccination Receipt to Mobile Wallets
-subtitle: This site, created by volunteers, imports your proof-of-vaccination QR code into Apple Wallet (for iOS 15+), Google Pay Wallet (for Android 8.1+), or a Photo pass (for all others) for easy access.
+subtitle: This site, created by volunteers, imports your proof-of-vaccination QR code into Apple Wallet, Google Pay Wallet, or a Photo pass (for all others) for easy access. The QR code is compatible with official scanner apps from the provinces.
 subtitle2: |
   We support importing QR codes from the following provinces and territories:
 continueSpirit: Continuing the spirit of ❤️ @VaxHuntersCanada ❤️

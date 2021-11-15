@@ -36,3 +36,4 @@ yarn-error.log*
 *.local
 .env.local
 build2.sh
+public/displayLocallySavedItem1.html

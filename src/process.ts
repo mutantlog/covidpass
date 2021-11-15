@@ -15,10 +15,15 @@ import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 PdfJS.GlobalWorkerOptions.workerSrc = pdfjsWorker;          // use the built-in version to avoid using cloudflare, which is considered a tracker by Safari
 // PdfJS.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PdfJS.version}/pdf.worker.js`
 
+class ImageDataWithDataUri {
+    imageData: ImageData;
+    dataUri?: string;
+}
+
 export async function getPayloadBodyFromFile(file: File): Promise<PayloadBody> {
     // Read file
     const fileBuffer = await file.arrayBuffer();
-    let imageData: ImageData[];
+    let imageData: ImageDataWithDataUri[];
 
     switch (file.type) {
         case 'application/pdf':
@@ -42,7 +47,7 @@ export async function getPayloadBodyFromFile(file: File): Promise<PayloadBody> {
     return processSHC(imageData);
 }
 
-async function getImageDataFromPdfPage(pdfPage: PDFPageProxy): Promise<ImageData> {
+async function getImageDataFromPdfPage(pdfPage: PDFPageProxy, numPages: number): Promise<ImageDataWithDataUri> {
 
     const pdfScale = 4;
 
@@ -62,12 +67,18 @@ async function getImageDataFromPdfPage(pdfPage: PDFPageProxy): Promise<ImageData
 
     await renderTask.promise;
 
+    const imageData = canvasContext.getImageData(0, 0, viewport.width, viewport.height);
+
+    const dataUri = canvas.toDataURL();
+    const imageDataWithDataUri : ImageDataWithDataUri = new ImageDataWithDataUri();
+    imageDataWithDataUri.imageData = imageData;
+    imageDataWithDataUri.dataUri = dataUri;
     // Return PDF Image Data
-    return Promise.resolve(canvasContext.getImageData(0, 0, canvas.width, canvas.height));
+    return Promise.resolve(imageDataWithDataUri);
 
 }
 
-function getImageDataFromImage(file: File): Promise<ImageData> {
+function getImageDataFromImage(file: File): Promise<ImageDataWithDataUri> {
     return new Promise((resolve, reject) => {
         const canvas = <HTMLCanvasElement>document.getElementById('canvas');
         const canvasContext = canvas.getContext('2d');
@@ -99,7 +110,12 @@ function getImageDataFromImage(file: File): Promise<ImageData> {
             canvasContext.drawImage(img, 0, 0, width, height);
 
             // Obtain image data
-            resolve(canvasContext.getImageData(0, 0, width, height));
+            const imageData = canvasContext.getImageData(0, 0, width, height);
+            const dataUri = canvas.toDataURL();
+            const imageDataWithDataUri : ImageDataWithDataUri = new ImageDataWithDataUri();
+            imageDataWithDataUri.imageData = imageData;
+            imageDataWithDataUri.dataUri = dataUri;
+            resolve(imageDataWithDataUri);
         };
 
         img.onerror = (e) => {
@@ -111,7 +127,7 @@ function getImageDataFromImage(file: File): Promise<ImageData> {
     });
 }
 
-async function getImageDataFromPdf(fileBuffer: ArrayBuffer): Promise<ImageData[]> {
+async function getImageDataFromPdf(fileBuffer: ArrayBuffer): Promise<ImageDataWithDataUri[]> {
 
     const typedArray = new Uint8Array(fileBuffer);
     const loadingTask = PdfJS.getDocument(typedArray);
@@ -119,13 +135,20 @@ async function getImageDataFromPdf(fileBuffer: ArrayBuffer): Promise<ImageData[]
     const pdfDocument = await loadingTask.promise;
     console.log('SHC PDF loaded');
     const retArray = [];
+    let fullUri = '';
+    if ((navigator.userAgent.indexOf('Safari') >= 0) && (navigator.userAgent.indexOf('iPhone') >= 0)) {
+        fullUri = `data:application/pdf;base64,${Buffer.from(fileBuffer).toString("base64")}`
+    }
 
     // Load and return every page in our PDF
     for (let i = 1; i <= pdfDocument.numPages; i++) {
         console.log(`Processing PDF page ${i}`);
         const pdfPage = await pdfDocument.getPage(i);
-        const imageData = await getImageDataFromPdfPage(pdfPage);
-        retArray.push(imageData);
+        let imageDataWithDataUri = await getImageDataFromPdfPage(pdfPage, pdfDocument.numPages);
+        if (fullUri.length > 0) {
+            imageDataWithDataUri.dataUri = fullUri;
+        }
+        retArray.push(imageDataWithDataUri);
     }
 
     return Promise.resolve(retArray);
@@ -156,7 +179,7 @@ export async function processSHCCode(shcQrCode : string) : Promise<PayloadBody> 
     }
 } 
 
-async function processSHC(allImageData : ImageData[]) : Promise<PayloadBody> {
+async function processSHC(allImageData : ImageDataWithDataUri[]) : Promise<PayloadBody> {
 
     console.log('processSHC');
 
@@ -165,13 +188,14 @@ async function processSHC(allImageData : ImageData[]) : Promise<PayloadBody> {
             for (let i = 0; i < allImageData.length; i++) {
 
                 const imageData = allImageData[i];
-                const code : QRCode = await Decode.getQRFromImage(imageData);
-                //console.log(`SHC code result from page ${i}:`);
-                //console.log(code);
+                const code : QRCode = await Decode.getQRFromImage(imageData.imageData);
 
         		if (code) {
                     try {
-                        return await processSHCCode(code.data);
+                        const payloadBody = await processSHCCode(code.data);
+                        payloadBody.dataUrl = imageData.dataUri;
+                        console.log('dataUrl = ' + payloadBody.dataUrl);
+                        return Promise.resolve(payloadBody);
                     } catch (e) {
                         // We blew up during processing - log it and move on to the next page
                         console.log(e);
@@ -190,3 +214,4 @@ async function processSHC(allImageData : ImageData[]) : Promise<PayloadBody> {
         return Promise.reject(e);
     }
 }
+

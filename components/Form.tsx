@@ -16,6 +16,7 @@ import * as Sentry from '@sentry/react';
 import Bullet from './Bullet';
 import { GPayData } from '../src/gpay';
 import Dropdown from './Dropdown';
+import { debug } from 'webpack';
 
 const getTheme = () => {
     if (typeof window !== 'undefined' && 
@@ -140,7 +141,6 @@ function Form(): JSX.Element {
                     _setFileErrorMessages([]);
                     checkBrowserType();
                     payloadBody = await getPayload(selectedFile);
-                    await storeFileToLocalStorageBase64('receipt', selectedFile);
                     await renderPhoto(payloadBody);
                 }
             });
@@ -178,9 +178,6 @@ function Form(): JSX.Element {
         try {
             const payload = await getPayloadBodyFromFile(file);
             
-            payload.dataUrl = "receipt";
-            console.log(file);
-
             if (file2) {
                 payload.extraUrl = file2.name;
             }
@@ -367,7 +364,10 @@ function Form(): JSX.Element {
 
         try {
             if (payloadBody) {
-                
+            
+                if (isIOS && isSafari) {
+                    localStorage.setItem('receipt', payloadBody.dataUrl);
+                }
                 const selectedReceipt = payloadBody.shcReceipt;
                 const filenameDetails = selectedReceipt.cardOrigin.replace(' ', '-');
                 const passName = selectedReceipt.name.replace(' ', '-');
@@ -416,6 +416,10 @@ function Form(): JSX.Element {
 
         try {
             if (payloadBody) {
+
+                if (isAndroid && payloadBody.dataUrl) {
+                    localStorage.setItem('receipt', payloadBody.dataUrl);
+                }
 
                 console.log('> increment count');
                 await incrementCount();

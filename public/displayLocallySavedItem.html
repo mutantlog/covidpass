@@ -4,16 +4,15 @@
     <script>
         function loadItem() {
 
-            if (navigator.userAgent.indexOf('Safari') < 0) {
+            if (navigator.userAgent.includes('iPhone') && (navigator.userAgent.indexOf('Safari') < 0)) {
                 document.getElementById('msg').textContent = 'Sorry. For fastlink to work, your iPhone needs to be using Safari as default browser. To change it, you can go to Settings - Chrome/Firefox';
                 return;
             }
 
             const itemKey = location.href.split('=')[1];
-            console.log(itemKey);
             let dataUrl = localStorage.getItem(itemKey);
             if (dataUrl) {
-                const imageElement = document.getElementById('image');
+                const imageElement = document.getElementById('image');        // this is a PDF for Safari/iPhone and a PNG for Chrome
                 imageElement.setAttribute('src', dataUrl);
                 document.getElementById('clearButton').hidden = false;
             } else {

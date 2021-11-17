@@ -42,8 +42,8 @@ function Index(): JSX.Element {
     }, []);
     
 
-    const title = 'Grassroots - vaccination QR Code import for Apple and Android devices. Supports most Canadian provinces and territories';
-    const description = 'Grassroots imports vaccination QR codes and stores them on Apple and Android devices in a convenient, secure, and privacy-respecting way. Supports SHC QR codes from most Canadian provinces and territories';
+    const title = 'Grassroots - vaccination QR Code import for Apple and Android devices. Supports all Canadian provinces and territories';
+    const description = 'Grassroots imports vaccination QR codes and stores them on Apple and Android devices in a convenient, secure, and privacy-respecting way. Supports SHC QR codes from all Canadian provinces and territories';
 
     return (
         <>
@@ -81,6 +81,7 @@ function Index(): JSX.Element {
                                 <div className="region-card">Alberta</div>
                                 <div className="region-card">British Columbia</div>
                                 <div className="region-card">Manitoba (NEW QR CODES ONLY)</div>
+                                <div className="region-card">New Brunswick</div>
                                 <div className="region-card">Newfoundland and Labrador</div>
                                 <div className="region-card">Northwest Territories</div>                                
                                 <div className="region-card">Nova Scotia</div>
@@ -108,13 +109,12 @@ function Index(): JSX.Element {
                                 <div className="region-card">Virginia</div>
                             </div> */}
                             <b>{displayPassCount}</b><br/><br/>
-                            Nov 14 evening update:
+                            Nov 17 update:
                             <br />
                             <br />
                             <ul className="list-decimal list-outside" style={{ marginLeft: '20px' }}>
+                                <li>Support for Canadian Armed Forces and New Brunswick federal-standard QR codes</li>
                                 <li><b>New for Android users:</b> You can now quickly access your original PDF (including its Canada wordmark) by scrolling to the bottom of your Google Pay pass, tap Details and tap 'Display original PDF receipt'.</li>
-                                <br/>
-                                <li>Support for Canadian Armed Forces federal-standard QR codes</li>
                                 <li>For iPhone users: You can now quickly access the original PDF receipt from your wallet pass (by tapping ... on the top right to see details). If you have already created a Wallet pass, you can delete the old one and re-import to get this convenience feature.</li>
                                 <li>Thank you very much to the Government of Nunavut for proactively reaching out to us to allow us to add support for Nunavummiut!</li>
                                 <li>(Often-requested) support added for importing proof-of-vaccination into Google Pay on Android 8.1+</li>

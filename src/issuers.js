@@ -370,6 +370,17 @@ export const issuers = [
         y: "NMHkeXhTZzwMbZAKucJ987PKSM7PVELpKhKien-ssq4" },
     ]
   },
+  {
+    id: "ca.nb",
+    display: "New Brunswick",
+    iss: "https://www.gnb.ca/smarthealth",
+    keys: [
+      { kid: "B-13oSlY74FwGHFRZCJ3ND4cnvoejR8szT-GaZd6RgY",
+        alg: "ES256", kty: "EC", crv: "P-256", use: "sig",
+        x: "k6dOuyy-84IA5Qm6qcqff8_3VGu0_MuC9OEEoZS84AA",
+        y: "ViApMHkhltp4gVwzSIJuEZiO6QFpVgpo01pzpbmdSZQ" },
+    ]
+  },
 ];
 
 // Check for updates above at https://files.ontario.ca/apps/verify/verifyRulesetON.json

@@ -28,7 +28,6 @@ export class GPayData {
             console.log('> GPayData::generatePass');
 
             const results = await PassPhotoCommon.preparePayload(payloadBody, true, numDose);
-            const payload = results.payload;
             // Create pass data
 
             const config = await getConfigData();
@@ -41,7 +40,7 @@ export class GPayData {
                 },
                 body: JSON.stringify({
                     payloadBody: payloadBody,
-                    id: payload.serialNumber,
+                    id: payloadBody.serialNumber,
                     qrCodeMessage: results.qrCode.message
                 }),
             });

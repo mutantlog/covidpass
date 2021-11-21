@@ -103,9 +103,9 @@ export class PassPhotoCommon {
         console.log('preparePayload');
         
         // console.log(JSON.stringify(payloadBody, null, 2), numDose);
+        payloadBody.serialNumber = uuid4();
 
         const payload: Payload = new Payload(payloadBody, numDose);
-        payload.serialNumber = uuid4();
         if (shouldRegister) {
             const wasSuccess = await registerPass(payload);
             if (!wasSuccess) {

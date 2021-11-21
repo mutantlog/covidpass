@@ -45,6 +45,7 @@ export interface PayloadBody {
     shcReceipt: SHCReceipt;
     dataUrl?: string;
     extraUrl?: string;
+    serialNumber?: string;
 }
 
 export class Payload {
@@ -70,6 +71,7 @@ export class Payload {
         this.rawData = body.rawData;
         this.dataUrl = body.dataUrl;
         this.extraUrl = body.extraUrl;
+        this.serialNumber = body.serialNumber;
 
         this.generic = {
             headerFields: [],
@@ -88,7 +90,7 @@ export class Payload {
             this.img2x = Constants.img2xBlack;
 
             if (this.dataUrl) {
-                let displayLocallyStoredPDFUrl = window.location.href + "displayLocallySavedItem.html?item=receipt" ;  
+                let displayLocallyStoredPDFUrl = window.location.href + "displayLocallySavedItem.html?item=receipt&serialNumber=" + body.serialNumber;  
                 const attributedValue = `<a href="${displayLocallyStoredPDFUrl}">View Receipt</a>`;
                 
                 this.generic.backFields.push({
@@ -99,7 +101,7 @@ export class Payload {
             }
 
             if (this.extraUrl) {
-                let extraUrl = window.location.href + "displayLocallySavedItem.html?item=extra" ;  
+                let extraUrl = window.location.href + "displayLocallySavedItem.html?item=extra&serialNumber=" + body.serialNumber; ;  
                 const attributedValue = `<a href="${extraUrl}">View Extra Info</a>`;
                 this.generic.backFields.push({
                     key: "extra",

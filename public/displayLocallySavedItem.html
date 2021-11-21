@@ -2,6 +2,8 @@
 
 <head>
     <script>
+        let itemKey;
+
         function loadItem() {
 
             if (navigator.userAgent.includes('iPhone') && (navigator.userAgent.indexOf('Safari') < 0)) {
@@ -9,7 +11,16 @@
                 return;
             }
 
-            const itemKey = location.href.split('=')[1];
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const item = urlParams.get('item');
+            itemKey = item;
+
+            if (urlParams.has('serialNumber')) {
+                const serialNumber = urlParams.get('serialNumber');
+                itemKey = item + '-' + serialNumber;
+            }
+
             let dataUrl = localStorage.getItem(itemKey);
             if (dataUrl) {
                 const imageElement = document.getElementById('image');        // this is a PDF for Safari/iPhone and a PNG for Chrome
@@ -21,7 +32,7 @@
         }
 
         function clearLocalStorage() {
-            localStorage.clear();
+            localStorage.removeItem(itemKey);
             document.getElementById('image').hidden = true;
             document.getElementById('msg').innerHTML = 'Local storage cleared.';
             document.getElementById('clearButton').hidden = true;

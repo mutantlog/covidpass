@@ -366,9 +366,7 @@ function Form(): JSX.Element {
         try {
             if (payloadBody) {
             
-                if (isIOS && isSafari) {
-                    localStorage.setItem('receipt', payloadBody.dataUrl);
-                }
+
                 const selectedReceipt = payloadBody.shcReceipt;
                 const filenameDetails = selectedReceipt.cardOrigin.replace(' ', '-');
                 const passName = selectedReceipt.name.replace(' ', '-');
@@ -379,6 +377,10 @@ function Form(): JSX.Element {
                 const passBlob = new Blob([pass], {type: "application/vnd.apple.pkpass"});
 
                 await incrementCount();
+                
+                if (isIOS && isSafari) {
+                    localStorage.setItem(`receipt-${payloadBody.serialNumber}`, payloadBody.dataUrl);
+                }
 
                 saveAs(passBlob, covidPassFilename);
                 setSaveLoading(false);
@@ -418,15 +420,16 @@ function Form(): JSX.Element {
         try {
             if (payloadBody) {
 
-                if (isAndroid && payloadBody.dataUrl) {
-                    localStorage.setItem('receipt', payloadBody.dataUrl);
-                }
-
                 console.log('> increment count');
                 await incrementCount();
 
                 console.log('> generatePass');
                 const jwt = await GPayData.generatePass(payloadBody, selectedDose);
+
+                if (payloadBody.dataUrl) {
+                    localStorage.setItem(`receipt-${payloadBody.serialNumber}`, payloadBody.dataUrl);
+                    console.log(`receipt-${payloadBody.serialNumber} saved`);
+                }
 
                 const newUrl = `https://pay.google.com/gp/v/save/${jwt}`;
                 console.log('> redirect to save Google Pass');

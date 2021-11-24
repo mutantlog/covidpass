@@ -26,6 +26,8 @@
                 const imageElement = document.getElementById('image');        // this is a PDF for Safari/iPhone and a PNG for Chrome
                 imageElement.setAttribute('src', dataUrl);
                 document.getElementById('clearButton').hidden = false;
+                document.getElementById('clearAllButton').hidden = false;
+
             } else {
                 document.getElementById('msg').innerHTML = `Sorry, ${itemKey} not found in local storage.<p />Creating your wallet pass again would likely fix this issue.`;
             }
@@ -34,10 +36,18 @@
         function clearLocalStorage() {
             localStorage.removeItem(itemKey);
             document.getElementById('image').hidden = true;
-            document.getElementById('msg').innerHTML = 'Local storage cleared.';
+            document.getElementById('msg').innerHTML = 'This PDF has been deleted from local storage.';
             document.getElementById('clearButton').hidden = true;
         }
         
+        function clearAllLocalStorage() {
+                localStorage.clear();
+                document.getElementById('image').hidden = true;
+                document.getElementById('msg').innerHTML = 'All local storage cleared.';
+                document.getElementById('clearButton').hidden = true;
+                document.getElementById('clearAllButton').hidden = true;
+        }
+
     </script>
     <style>
         
@@ -55,7 +65,7 @@
         }
     
         .big-text {
-            font-size: 48;
+            font-size: 32;
         }
     </style>
 
@@ -64,7 +74,10 @@
 <body>
     <img id='image' width="100%" />
     <br />
-    <input id='clearButton' class='big-text' type="button" hidden value='Clear Local Storage' onclick="clearLocalStorage()"></input>
+    <input id='clearButton' class='big-text' type="button" hidden value='Remove this PDF' onclick="clearLocalStorage()"></input>&nbsp;&nbsp;&nbsp;
+    <input id='clearAllButton' class='big-text' type="button" hidden value='Remove all PDFs'
+            onclick="clearAllLocalStorage()"></input>
+
     <div id='msg' class='center big-text' width="100%" />
 
     <script>

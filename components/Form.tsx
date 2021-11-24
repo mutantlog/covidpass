@@ -379,7 +379,17 @@ function Form(): JSX.Element {
                 await incrementCount();
                 
                 if (isIOS && isSafari) {
-                    localStorage.setItem(`receipt-${payloadBody.serialNumber}`, payloadBody.dataUrl);
+                    try {
+                        
+                        localStorage.setItem(`receipt-${payloadBody.serialNumber}`, payloadBody.dataUrl);
+                        console.log(`receipt-${payloadBody.serialNumber} saved`);
+
+                    } catch (e) {
+                        // clear old receipts and retry
+                        console.info('clearing old receipts');
+                        localStorage.clear();
+                        localStorage.setItem(`receipt-${payloadBody.serialNumber}`, payloadBody.dataUrl);
+                    }
                 }
 
                 saveAs(passBlob, covidPassFilename);
@@ -427,8 +437,20 @@ function Form(): JSX.Element {
                 const jwt = await GPayData.generatePass(payloadBody, selectedDose);
 
                 if (payloadBody.dataUrl) {
-                    localStorage.setItem(`receipt-${payloadBody.serialNumber}`, payloadBody.dataUrl);
-                    console.log(`receipt-${payloadBody.serialNumber} saved`);
+                    try {
+                        
+                        localStorage.setItem(`receipt-${payloadBody.serialNumber}`, payloadBody.dataUrl);
+                        console.log(`receipt-${payloadBody.serialNumber} saved`);
+
+                    } catch (e) {
+                        if (e.message.includes('quota')) {
+                            
+                            // clear old receipts and retry
+                            console.info('clearing old receipts');
+                            localStorage.clear();
+                            localStorage.setItem(`receipt-${payloadBody.serialNumber}`, payloadBody.dataUrl);
+                        }
+                    }
                 }
 
                 const newUrl = `https://pay.google.com/gp/v/save/${jwt}`;

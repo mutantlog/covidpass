@@ -144,6 +144,18 @@ export async function decodedStringToReceipt(decoded: object) : Promise<SHCRecei
         isValidatedSHC = false;
     }
 
+    // sort immunization records by date (Alberta requires this)
+
+    vaxRecords.sort((a, b) => {
+        if (a.vaccinationDate < b.vaccinationDate) {
+            return -1;
+        } else if (a.vaccinationDate > b.vaccinationDate) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+
     const retReceipt = new SHCReceipt(name, dateOfBirth, verifiedIssuer.display, verifiedIssuer.iss, vaxRecords);
     console.log(`Creating receipt for region [${retReceipt.cardOrigin}] with vaccination records [${JSON.stringify(retReceipt.vaccinations)}]`);
 

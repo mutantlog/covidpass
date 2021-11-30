@@ -113,7 +113,7 @@ function Index(): JSX.Element {
                             <br />
                             <br />
                             <ul className="list-decimal list-outside" style={{ marginLeft: '20px' }}>
-                                <li>Adjustments to handle new QR code format from Alberta (new with Canada wordmark). If your pass shows Dose 1 and 2 with the dates reversed, pls delete your old one and re-import in your Wallet. Thanks.</li>
+                                <li>Adjustments to handle new QR code format from Alberta. If your pass shows Dose 1 and 2 with the dates reversed, pls delete your old one wallet pass and re-import in your Wallet. Thanks.</li>
                                 <li>Support for Canadian Armed Forces and New Brunswick federal-standard QR codes</li>
                             </ul><br />
                             <p>{t('common:continueSpirit')}</p>

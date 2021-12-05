@@ -132,13 +132,13 @@ function processSHCReceipt(receipt: SHCReceipt, generic: PassDictionary) {
         );
     }
 
-    generic.auxiliaryFields.push({
-        key: "details",
-        label: "For details or to remove this pass",
-        value: "Touch the circle with ... on the top right"
-    });
+    // generic.auxiliaryFields.push({
+    //     key: "details",
+    //     label: "For details or to remove this pass",
+    //     value: "Touch the circle with ... on the top right"
+    // });
 
-    generic.backFields.push({
+    generic.primaryFields.push({
         key: "date-of-birth",
         label: "Date of Birth",
         value: receipt.dateOfBirth    

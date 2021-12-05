@@ -769,11 +769,9 @@ function Form(): JSX.Element {
                     </tbody>
                  </table>
                 <br/>
-                <br/>
                 <div style={{fontSize:14, textAlign: 'center'}}>
                     <span id='shc-card-name' ></span>&nbsp;&nbsp;&nbsp;&nbsp;(<span id='shc-card-dob'></span>)
                 </div>
-                <br/>
                 <br/>
                 <table style={{textAlign: "center", width: "100%"}}>
                     <tbody>
@@ -783,14 +781,16 @@ function Form(): JSX.Element {
                         <tr>
                             <td id='shc-card-vaccine-date-1'></td>&nbsp;&nbsp;<td id='shc-card-vaccine-date-2'></td>
                         </tr>
-                        <tr id='extraRow1' hidden>
+                        <tr id='extraRow1a' hidden>
                             <td id='shc-card-vaccine-name-3'></td>&nbsp;&nbsp;<td id='shc-card-vaccine-name-4'></td>
                         </tr>
-                        <tr id='extraRow2' hidden>
+                        <tr id='extraRow1b' hidden>
                             <td id='shc-card-vaccine-date-3'></td>&nbsp;&nbsp;<td id='shc-card-vaccine-date-4'></td>
                         </tr>
                     </tbody>
-                 </table>       
+                </table>       
+                <br/>
+
                 <div id='shc-card-vaccine' style={{width:'63%', display:'block', marginLeft: 'auto', marginRight: 'auto'}}></div>
 
                 <div id='shc-qrcode' style={{width:'63%', display:'block', marginLeft: 'auto', marginRight: 'auto'}}></div>

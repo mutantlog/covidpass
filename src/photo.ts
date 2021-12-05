@@ -60,7 +60,8 @@ export class Photo {
 
                     receipt = results.payload.receipts[i];
 
-                    document.getElementById('extraRow' + i ).hidden = false;
+                    document.getElementById('extraRow' + i + 'a').hidden = false;
+                    document.getElementById('extraRow' + i + 'b' ).hidden = false;
                     document.getElementById('vaccinationDate' + i).innerText = receipt.vaccinationDate;
                     document.getElementById('organization' + i).innerText = receipt.organization;
                 }
@@ -115,6 +116,7 @@ export class Photo {
                 document.getElementById(`shc-card-vaccine-date-${i+1}`).innerText = vaccinations[i].vaccinationDate;
                 if (i > 1) {
                     document.getElementById(`shc-card-vaccine-name-${i+1}`).parentElement.hidden = false;
+                    document.getElementById(`shc-card-vaccine-date-${i+1}`).parentElement.hidden = false;
                 }
             }
 

@@ -1,7 +1,9 @@
-docker build . -t covidpass -t gcr.io/broadcast2patients/covidpass
-docker push gcr.io/broadcast2patients/covidpass
-gcloud config set project broadcast2patients
-gcloud config set run/region us-east1
-gcloud run services update-traffic covidpass --to-latest
+if [[ $(uname -p) == 'i386' ]]; then
+  docker build . -t covidpass -t gcr.io/broadcast2patients/covidpass
+  docker push gcr.io/broadcast2patients/covidpass
+  docker image prune -f
+else
+  gcloud builds submit --tag gcr.io/broadcast2patients/covidpass
+fi
+
 gcloud run deploy covidpass --image gcr.io/broadcast2patients/covidpass:latest --platform managed
-docker image prune -f

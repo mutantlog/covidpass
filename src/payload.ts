@@ -138,7 +138,7 @@ function processSHCReceipt(receipt: SHCReceipt, generic: PassDictionary) {
     //     value: "Touch the circle with ... on the top right"
     // });
 
-    generic.primaryFields.push({
+    generic.secondaryFields.push({
         key: "date-of-birth",
         label: "Date of Birth",
         value: receipt.dateOfBirth    
@@ -146,7 +146,7 @@ function processSHCReceipt(receipt: SHCReceipt, generic: PassDictionary) {
 
     for (let i = 0; i < receipt.vaccinations.length; i++) {
 
-        generic.secondaryFields.push(
+        generic.auxiliaryFields.push(
             {
                 key: 'vaccine' + (i+1),
                 label: `#${i+1} ${receipt.vaccinations[i].vaccineName}`,

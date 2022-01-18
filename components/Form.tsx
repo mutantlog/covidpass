@@ -545,6 +545,7 @@ function Form(): JSX.Element {
         // if (isIOS || isMacOs) {
         //     setIsDisabledFastLink(false);
         // }
+                    console.log(osVersion);
 
         if (isMacOs) {
             setAddErrorMessage('iOSReminder')
@@ -558,7 +559,9 @@ function Form(): JSX.Element {
         }
 
         if (isAndroid) {
-            if (Number(osVersion) > 8) {
+            const majorVersion = parseInt(osVersion.split('.')[0]);
+            console.log(`majorVersion=${majorVersion}`);
+            if (majorVersion >= 8) {
                 setIsDisabledGooglePay(false);
             } else {
                 setAddErrorMessage('androidVersionError')

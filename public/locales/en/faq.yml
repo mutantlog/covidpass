@@ -1,8 +1,8 @@
 heading: Frequently Asked Questions
 iosSupportQ: Which versions of iOS does this support?
 iosSupportA: Importing the new enhanced QR codes into Apple Wallet requires iOS 15+, for everyone else please create Photo cards or install Google Pay and create a Google Pay card.
-androidSupportQ: Which versions of Android does this support?
-androidSupportA: Importing the new enhanced QR codes into Google Pay requires Android 8.1+, for everyone else please create Photo cards.
+androidSupportQ: Which versions of Android does this support? I am getting a 400 Bad Request error, pls help...
+androidSupportA: Importing the new enhanced QR codes into Google Pay requires Android 8.1+, for everyone else please create Photo cards. Some users have reported 400 Bad Request errors, it can likely be resolved by clearing your Chrome browser cache on the Android phone and retry. Sorry about the inconvenience.
 olderIPhoneQ: I'm having issues with adding a Wallet card to my older iPhone
 olderIPhoneA: Unfortunately, the minimum requirement for importing the new QR code into Apple Wallet is iOS 15, which runs on iPhone 6s and newer devices - you will need to create a Photo card or install Google Pay and create a Google Pay card.
 qrSmallQ: Why does my Apple Wallet QR code look so small and/or different from the original?

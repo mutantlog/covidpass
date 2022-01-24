@@ -45,6 +45,7 @@ function Faq(): JSX.Element {
       {description: t('faq:browsersQ'), answer: t('faq:browsersA')},
       {description: t('faq:privateInfoQ'), answer: t('faq:privateInfoA')},
       {description: t('faq:samsungQ'), answer: urlParse(t('faq:samsungA'), [CONSTANTS.googlePayApp])},
+      {description: t('faq:fourthDoseQ'), answer: t('faq:fourthDoseA')},
       {description: t('faq:redWhiteQ'), answer: t('faq:redWhiteA')},
       {description: t('faq:noOhipQ'), answer: t('faq:noOhipA')},
       {description: t('faq:colourQ'), answer: t('faq:colourA')},

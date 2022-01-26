@@ -8,5 +8,5 @@ fi
 
 gcloud config set project broadcast2patients
 gcloud config set run/region us-east1
-gcloud run deploy covidpass2 --image gcr.io/broadcast2patients/covidpass2:latest --platform managed
+gcloud run deploy covidpass2 --image gcr.io/broadcast2patients/covidpass2:latest --platform managed --project broadcast2patients
  

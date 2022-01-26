@@ -6,4 +6,4 @@ else
   gcloud builds submit --tag gcr.io/broadcast2patients/covidpass
 fi
 
-gcloud run deploy covidpass --image gcr.io/broadcast2patients/covidpass:latest --platform managed
+gcloud run deploy covidpass --image gcr.io/broadcast2patients/covidpass:latest --platform managed --project broadcast2patients

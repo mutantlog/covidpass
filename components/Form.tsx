@@ -92,7 +92,7 @@ function Form(): JSX.Element {
     const [showDoseOption, setShowDoseOption] = useState<boolean>(false);
 
     // const [warningMessages, _setWarningMessages] = useState<Array<string>>([]);
-    const hitcountHost = 'https://stats.vaccine-ontario.ca';
+    const hitcountHost = 'https://stats.reportmytest.ca';
 
     // Check if there is a translation and replace message accordingly
     const setAddErrorMessage = (message: string) => {

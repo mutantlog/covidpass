@@ -1,3 +1,4 @@
+gcloud config set project broadcast2patients
 if [[ $(uname -p) == 'i386' ]]; then
   docker build . -t covidpass -t gcr.io/broadcast2patients/covidpass
   docker push gcr.io/broadcast2patients/covidpass

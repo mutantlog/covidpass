@@ -80,7 +80,7 @@ function Index(): JSX.Element {
                             <div className="region-section">
                                 <div className="region-card">Alberta</div>
                                 <div className="region-card">British Columbia</div>
-                                <div className="region-card">Manitoba (NEW QR CODES ONLY)</div>
+                                <div className="region-card">Manitoba</div>
                                 <div className="region-card">New Brunswick</div>
                                 <div className="region-card">Newfoundland and Labrador</div>
                                 <div className="region-card">Northwest Territories</div>                                
@@ -109,13 +109,11 @@ function Index(): JSX.Element {
                                 <div className="region-card">Virginia</div>
                             </div> */}
                             <b>{displayPassCount}</b><br/><br/>
-                            Nov 29 update:
+                            July 21, 2022 update:
                             <br />
                             <br />
-                            <ul className="list-decimal list-outside" style={{ marginLeft: '20px' }}>
-                                <li>Adjustments to handle new QR code format from Alberta. If your pass shows Dose 1 and 2 with the dates reversed, pls delete your old one wallet pass and re-import in your Wallet. Thanks.</li>
-                                <li>Support for Canadian Armed Forces and New Brunswick federal-standard QR codes</li>
-                            </ul><br />
+                            FAQ: Why doesn't my QR code and wallet pass contain my 4th dose?<br></br><br></br>
+                            Unfortunately, Ontario's QR code software encodes only the most recent 3 doses; even though the receipt shows all 4 doses. Our web site extracts details from the signed QR code for Apple/Google Wallet and has inherited this limitation. Sorry.<p></p>
                             <p>{t('common:continueSpirit')}</p>
                             <br />  
                             <Link href="https://youtu.be/O9jtIjj9BnY">

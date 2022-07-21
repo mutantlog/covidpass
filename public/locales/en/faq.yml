@@ -40,4 +40,4 @@ updatesA: We will post regular updates on Twitter %s
 moreQuestionsQ: I have more questions. Can you please help me?
 moreQuestionsA: Sure. Just email us at %s
 fourthDoseQ: Why is my pass not showing all 4 doses?
-fourthDoseA: Ontario hasn't updated its system to include all 4 doses in their receipt yet. Once they do, simply come back to this site to import all doses into your mobile wallets.
+fourthDoseA: Ontario's QR code software only encodes the most recent 3 doses unfortunately; even though the textual content shows all 4 doses. Our web site reformats the provincial QR code for Apple/Google Wallet and therefore inherited this limitation.  

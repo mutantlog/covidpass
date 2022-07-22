@@ -113,7 +113,7 @@ function Index(): JSX.Element {
                             <br />
                             <br />
                             FAQ: Why doesn't my QR code and wallet pass contain my 4th dose?<br></br><br></br>
-                            Unfortunately, Ontario's QR code software encodes only the most recent 3 doses; even though the receipt shows all 4 doses. Our web site extracts details from the signed QR code for Apple/Google Wallet and has inherited this limitation. Sorry.<p></p>
+                            Unfortunately, Ontario's QR code software encodes only the most recent 3 doses; even though the receipt shows all 4 doses. Our web site extracts details from the signed QR code for Apple/Google Wallet and has inherited this limitation. Sorry. <br /><br />
                             <p>{t('common:continueSpirit')}</p>
                             <br />  
                             <Link href="https://youtu.be/O9jtIjj9BnY">

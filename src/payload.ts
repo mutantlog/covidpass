@@ -3,7 +3,8 @@ import {COLORS} from "./colors";
 import link from "next/link";
 
 export class Receipt {
-    constructor(public name: string, public vaccinationDate: string, public vaccineName: string, public dateOfBirth: string, public numDoses: number, public organization: string) {};
+    constructor(public name: string, public vaccinationDate: string, public vaccineName: string, 
+        public dateOfBirth: string, public numDoses: number, public organization: string) {};
 }
 
 export interface HashTable<T> {
@@ -16,11 +17,13 @@ export interface HashTable<T> {
 // * NOTHING ELSE ON THE CARD TO ENCOURAGE SCANNING IT TO GET DATA (this is what QC does, and what BC mostly does; other jurisdictions add more data, but that encourages bad behaviour)
 
 export class SHCReceipt {
-    constructor(public name: string, public dateOfBirth: string, public cardOrigin: string, public issuer: string, public vaccinations: SHCVaccinationRecord[]) {};
+    constructor(public name: string, public dateOfBirth: string, public cardOrigin: string, 
+        public issuer: string, public vaccinations: SHCVaccinationRecord[]) {};
 }
 
 export class SHCVaccinationRecord {
-    constructor(public vaccineName: string, public vaccinationDate: string, public organization: string) {};
+    constructor(public vaccineName: string, public vaccinationDate: string, 
+        public organization: string) {};
 }
 
 interface Field {
@@ -132,11 +135,11 @@ function processSHCReceipt(receipt: SHCReceipt, generic: PassDictionary) {
         );
     }
 
-    // generic.auxiliaryFields.push({
-    //     key: "details",
-    //     label: "For details or to remove this pass",
-    //     value: "Touch the circle with ... on the top right"
-    // });
+    generic.auxiliaryFields.push({
+        key: "details",
+        label: "Note on 4+ doses in Ontario",
+        value: "QR code is encoded with most recent 3 doses only."
+    });
 
     generic.secondaryFields.push({
         key: "date-of-birth",
@@ -149,14 +152,14 @@ function processSHCReceipt(receipt: SHCReceipt, generic: PassDictionary) {
         generic.auxiliaryFields.push(
             {
                 key: 'vaccine' + (i+1),
-                label: `#${i+1} ${receipt.vaccinations[i].vaccineName}`,
+                label: `${receipt.vaccinations[i].vaccineName}`,
                 value: receipt.vaccinations[i].vaccinationDate
             }
         );
         generic.backFields.push(
             {
                 key: 'vaccine' + (i+1),
-                label: `#${i+1} ${receipt.vaccinations[i].vaccineName}`,
+                label: `${receipt.vaccinations[i].vaccineName}`,
                 value: `${receipt.vaccinations[i].vaccinationDate} in ${receipt.vaccinations[i].organization}`
             }
         )

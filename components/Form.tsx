@@ -734,7 +734,7 @@ function Form(): JSX.Element {
                             <button id="addToGooglePay" type="button" disabled={saveLoading || isDisabledGooglePay} value='gpay' name='action' onClick={addToGooglePay}
                                 className={'rounded-md ' + ((!payloadBody || saveLoading || isDisabledGooglePay)? 'bg-gray-300 cursor-not-allowed':'bg-black cursor-pointer')}>
                                     <div className="flex justify-center">
-                                <img style={{height: 40}} src="gpay_light.svg" alt={t('index:addToGooglePay')}/>
+                                <img style={{height: 40}} src="enCA_add_to_google_wallet_wallet-button.svg" alt={t('index:addToGooglePay')}/>
                                 </div>
                             </button>
 

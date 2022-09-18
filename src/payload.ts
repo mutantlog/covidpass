@@ -135,11 +135,11 @@ function processSHCReceipt(receipt: SHCReceipt, generic: PassDictionary) {
         );
     }
 
-    generic.auxiliaryFields.push({
-        key: "details",
-        label: "Note on 4+ doses in Ontario",
-        value: "QR code is encoded with most recent 3 doses only."
-    });
+    // generic.auxiliaryFields.push({
+    //     key: "details",
+    //     label: "Note on 4+ doses in Ontario",
+    //     value: "QR code is encoded with most recent 3 doses only."
+    // });
 
     generic.secondaryFields.push({
         key: "date-of-birth",

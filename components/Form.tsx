@@ -176,9 +176,10 @@ function Form(): JSX.Element {
     }
 
     async function getPayload(file) : Promise<PayloadBody> {
+
         try {
             const payload = await getPayloadBodyFromFile(file);
-            
+
             if (file2) {
                 payload.extraUrl = file2.name;
             }
@@ -186,7 +187,6 @@ function Form(): JSX.Element {
             setPayloadBody(payload);
             setFileLoading(false);
             setFile(file);
-
             if (payload.rawData.length == 0) {
                 if (Object.keys(payload.receipts).length === 1) {
                     setSelectedDose(parseInt(Object.keys(payload.receipts)[0]));
@@ -531,8 +531,10 @@ function Form(): JSX.Element {
         // }
         
         const uaIsiOS15 = getUA.includes('15_');
-        if (isIOS && ((!osVersion.startsWith('15')) && !uaIsiOS15)) {
-            const message = `Not iOS15 error: osVersion=${osVersion} UA=${getUA}`;
+        const uaIsiOS16 = getUA.includes('16_');
+
+        if (isIOS && ((!osVersion.startsWith('15') && (!osVersion.startsWith('16')) && !uaIsiOS15 && !uaIsiOS16))) {
+            const message = `Not iOS15+ error: osVersion=${osVersion} UA=${getUA}`;
             console.warn(message);
             Sentry.captureMessage(message);
             setAddErrorMessage(`Sorry, iOS 15+ is needed for the Apple Wallet functionality to work with Smart Health Card (detected iOS ${osVersion}, browser ${browserName} ${browserVersion})`);

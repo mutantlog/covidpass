@@ -22,25 +22,19 @@ class ImageDataWithDataUri {
 
 export async function getPayloadBodyFromFile(file: File): Promise<PayloadBody> {
     // Read file
+
     const fileBuffer = await file.arrayBuffer();
+
     let imageData: ImageDataWithDataUri[];
 
-    switch (file.type) {
-        case 'application/pdf':
-        
-            imageData = await getImageDataFromPdf(fileBuffer);
-            break;
-
-        case 'image/png':
-        case 'image/jpeg':
-        case 'image/webp':
-        case 'image/gif':
-            console.log(`image ${file.type}`);
-            imageData = [await getImageDataFromImage(file)];
-            break;
-
-        default:
-            throw Error('invalidFileType')
+    if (file.type === 'application/pdf') {
+        imageData = await getImageDataFromPdf(fileBuffer);
+    } else if (file.type === 'image/png' || file.type === 'image/jpeg' || 
+                file.type === 'image/webp' || file.type === 'image/gif') {
+                console.log(`image ${file.type}`);
+                imageData = [await getImageDataFromImage(file)];
+    } else {
+        throw Error('invalidFileType')
     }
 
     // Send back our SHC payload now
@@ -66,6 +60,7 @@ async function getImageDataFromPdfPage(pdfPage: PDFPageProxy, numPages: number):
     })
 
     await renderTask.promise;
+    console.log('PDF rendered');
 
     const imageData = canvasContext.getImageData(0, 0, viewport.width, viewport.height);
 
@@ -129,8 +124,13 @@ function getImageDataFromImage(file: File): Promise<ImageDataWithDataUri> {
 
 async function getImageDataFromPdf(fileBuffer: ArrayBuffer): Promise<ImageDataWithDataUri[]> {
 
+    console.log(fileBuffer);
+
     const typedArray = new Uint8Array(fileBuffer);
+    console.log('typedArray');
+
     const loadingTask = PdfJS.getDocument(typedArray);
+    console.log('loadingTask');
 
     const pdfDocument = await loadingTask.promise;
     console.log('SHC PDF loaded');

@@ -109,9 +109,13 @@ function Index(): JSX.Element {
                                 <div className="region-card">Virginia</div>
                             </div> */}
                             <b>{displayPassCount}</b><br/><br/>
-                            July 21, 2022 update:
+                            Sept 7, 2022 update:
                             <br />
                             <br />
+                            Grassroots works with iOS 16 now. Enjoy!
+                            <br />
+                            <br />
+
                             FAQ: Why doesn't my QR code and wallet pass contain my 4th dose?<br></br><br></br>
                             Unfortunately, Ontario's QR code software encodes only the most recent 3 doses; even though the receipt shows all 4 doses. Our web site extracts details from the signed QR code for Apple/Google Wallet and has inherited this limitation. Sorry. <br /><br />
                             <p>{t('common:continueSpirit')}</p>

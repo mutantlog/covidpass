@@ -53,6 +53,7 @@ function decodeJWS(jws) {
 function decodeJWSPayload(decodedPayload) {
   return new Promise((resolve, reject) => {
     zlib.inflateRaw(decodedPayload, function (err, decompressedResult) {
+      let scannedResult;
       if (typeof err === "object" && err) {
         console.log("Unable to decompress");
         reject(err);

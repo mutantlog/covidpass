@@ -21,7 +21,7 @@ export class Photo {
         // Create Payload
         try {
             console.log('generatePass');
-            const results = await PassPhotoCommon.preparePayload(payloadBody, true, numDose);
+            const results = await PassPhotoCommon.preparePayload(payloadBody, false, numDose);
             
             const payload = results.payload;
             const qrCode = results.qrCode;

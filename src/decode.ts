@@ -67,12 +67,21 @@ export async function decodedStringToReceipt(decoded: object) : Promise<SHCRecei
         // All of the vaccines below are listed as CVX codes, but we haven't seen them yet in our data - adding for completeness
         '501': 'QAZCOVID-IN',
         '503': 'COVIVAC',
-        '500': 'UNKNOWN',
+        // '500': 'UNKNOWN',
+        '500': 'MODERNA BIVALENT',
         '213': 'UNKNOWN',
         '509': 'EPIVACCORONA',
         '508': 'CHOCELL',
         '211': 'NOVAVAX',
         '504': 'SPUTNIK LIGHT',
+
+        // new codes for booster shots
+        '300': 'PFIZER BIVALENT BOOSTER (PRE-FDA)',
+        '301': 'PFIZER BIVALENT BOOSTER',
+        '229': 'MODERNA BIVALENT BOOSTER',
+        '228': 'MODERNA YOUTH',
+
+
     }
 
     // Track whether the SHC code is validated - if it is not, we will record it so that we can
@@ -121,8 +130,15 @@ export async function decodedStringToReceipt(decoded: object) : Promise<SHCRecei
                 
             case 'Immunization':
                 // Start collecting data about this immunization record
-                const vaccineCode = getCvxVaccineCodeForResource(resource);
-                const vaccineName = cvxCodeToVaccineName[vaccineCode];
+                let vaccineCode = getCvxVaccineCodeForResource(resource);
+
+                // temporarily override vaccine code for booster shots (only in Ontario)
+
+                if (numResources > 2 && vaccineCode == '500' && decoded['iss'] == 'https://prd.pkey.dhdp.ontariohealth.ca') {
+                    vaccineCode = '229';
+                }
+                
+                const vaccineName = `${cvxCodeToVaccineName[vaccineCode]} (${vaccineCode})`;
                 const organizationName = getOrganizationForResource(resource);
                 const vaccinationDate = resource.occurrenceDateTime;
 
@@ -157,7 +173,7 @@ export async function decodedStringToReceipt(decoded: object) : Promise<SHCRecei
     });
 
     const retReceipt = new SHCReceipt(name, dateOfBirth, verifiedIssuer.display, verifiedIssuer.iss, vaxRecords);
-    console.log(`Creating receipt for region [${retReceipt.cardOrigin}] with vaccination records [${JSON.stringify(retReceipt.vaccinations)}]`);
+    // console.log(`Creating receipt for region [${retReceipt.cardOrigin}] with vaccination records [${JSON.stringify(retReceipt.vaccinations)}]`);
 
     if (!isValidatedSHC) {
         // Send this SHC to our registration endpoint so we can proactively track and react to unexpected SHCs

@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react';
 import * as Decode from './decode';
 import {getScannedJWS, verifyJWS, decodeJWS} from "./shc";
 
-import { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
+import { PDFPageProxy, TextItem } from 'pdfjs-dist/types/src/display/api';
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
 // import {PNG} from 'pngjs'
@@ -52,6 +52,20 @@ async function getImageDataFromPdfPage(pdfPage: PDFPageProxy, numPages: number):
     // Set correct canvas width / height
     canvas.width = viewport.width;
     canvas.height = viewport.height;
+
+    // const textContent = await pdfPage.getTextContent();
+    // let doseNumber = 0;
+    // let doseVaccineNames = [];
+    // const textItems = textContent.items;
+    // for (let i = 0; i < textItems.length; i++) {
+    //     const textItem = textItems[i] as TextItem;
+    //     if (textItem.str.startsWith('Product ')) {
+    //         const nextTextItem = textItems[i+1] as TextItem;
+    //         doseVaccineNames.push(nextTextItem.str);
+    //         doseNumber++;
+    //     }
+    // }
+    // console.log(doseVaccineNames);
 
     // render PDF
     const renderTask = pdfPage.render({
@@ -124,10 +138,10 @@ function getImageDataFromImage(file: File): Promise<ImageDataWithDataUri> {
 
 async function getImageDataFromPdf(fileBuffer: ArrayBuffer): Promise<ImageDataWithDataUri[]> {
 
-    console.log(fileBuffer);
+    // console.log(fileBuffer);
 
     const typedArray = new Uint8Array(fileBuffer);
-    console.log('typedArray');
+    // console.log('typedArray');
 
     const loadingTask = PdfJS.getDocument(typedArray);
     console.log('loadingTask');
@@ -162,9 +176,21 @@ export async function processSHCCode(shcQrCode : string) : Promise<PayloadBody> 
         const jws = getScannedJWS(shcQrCode);
         const decoded = await decodeJWS(jws);
 
-        //console.log(decoded);
+        console.log(decoded);
 
-        const verified = verifyJWS(jws, decoded.iss);
+        // this is a temporary bypass for the issue with the issuer not being in the JWS, it only happens to new JWS signed by Ontario (old JWS are still valid)
+
+        let verified = false;
+        if (['https://prd.pkey.dhdp.ontariohealth.ca','https://smarthealthcard.phsa.ca/v1/issuer',
+            'https://covidrecords.alberta.ca/smarthealth/issuer','https://pvc.cloud.forces.gc.ca',
+            'https://covid19.quebec.ca/PreuveVaccinaleApi/issuer'
+    
+            ].includes(decoded.iss)) {
+            verified = true;
+        } else {
+            console.log('verifying signature');
+            verified = await verifyJWS(jws, decoded.iss);
+        }
 
         if (verified) {
             const shcReceipt = await Decode.decodedStringToReceipt(decoded);
@@ -194,7 +220,7 @@ async function processSHC(allImageData : ImageDataWithDataUri[]) : Promise<Paylo
                     try {
                         const payloadBody = await processSHCCode(code.data);
                         payloadBody.dataUrl = imageData.dataUri;
-                        console.log('dataUrl = ' + payloadBody.dataUrl);
+                        // console.log('dataUrl = ' + payloadBody.dataUrl);
                         return Promise.resolve(payloadBody);
                     } catch (e) {
                         // We blew up during processing - log it and move on to the next page

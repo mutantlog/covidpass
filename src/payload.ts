@@ -147,7 +147,9 @@ function processSHCReceipt(receipt: SHCReceipt, generic: PassDictionary) {
         value: receipt.dateOfBirth    
     });
 
-    for (let i = 0; i < receipt.vaccinations.length; i++) {
+    // reverse order so the most recent is first
+    
+    for (let i = receipt.vaccinations.length - 1; i >= 0 ; i--) {
 
         generic.auxiliaryFields.push(
             {

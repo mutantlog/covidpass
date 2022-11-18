@@ -109,15 +109,18 @@ function Index(): JSX.Element {
                                 <div className="region-card">Virginia</div>
                             </div> */}
                             <b>{displayPassCount}</b><br/><br/>
-                            Sept 7, 2022 update:
+                            Nov 18, 2022 update:
                             <br />
                             <br />
-                            Grassroots works with iOS 16 now. Enjoy!
+                            We managed to correct the error (No SHC code found for AB, BC, QC and Canadian Forces users). If you need help and don't mind sharing your QR code, I can do some testing manually for you.
                             <br />
                             <br />
-
-                            FAQ: Why doesn't my QR code and wallet pass contain my 4th dose?<br></br><br></br>
-                            Unfortunately, Ontario's QR code software encodes only the most recent 3 doses; even though the receipt shows all 4 doses. Our web site extracts details from the signed QR code for Apple/Google Wallet and has inherited this limitation. Sorry. <br /><br />
+                            Oct 21, 2022 update:
+                            <br />
+                            <br />
+                            Moderna Bivalent Booster is now decoded correctly (no longer shown as UNKNOWN).
+                            <br />
+                            <br />
                             <p>{t('common:continueSpirit')}</p>
                             <br />  
                             <Link href="https://youtu.be/O9jtIjj9BnY">

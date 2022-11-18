@@ -478,7 +478,7 @@ function Form(): JSX.Element {
         }
     }
 
-    async function renderPhoto(payloadBody : PayloadBody, shouldRegister = true) {
+    async function renderPhoto(payloadBody : PayloadBody, shouldRegister = false) {
         console.log('renderPhoto');
         if (!payloadBody) {
             console.log('no payload body');
@@ -586,7 +586,6 @@ function Form(): JSX.Element {
                         <Dropdown label="Select Your Province" options={options} />
                     </div>
                 }/>
-
                 <Card step="2" heading={t('index:selectCertificate')} content={
                     <div className="space-y-5">
                         <p>{t('index:selectCertificateDescription')}</p>
@@ -612,7 +611,6 @@ function Form(): JSX.Element {
                                 </svg>
                             </div>
                         </div>
-
                         <video id="cameraPreview"
                                className={`${isCameraOpen ? undefined : "hidden"} rounded-md w-full`}/>
                         <input type='file'
@@ -621,7 +619,6 @@ function Form(): JSX.Element {
                                ref={inputFile}
                                style={{display: 'none'}}
                         />
-
                         {(qrCode || file) &&
                         <div className="flex items-center space-x-1">
                             <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24"
@@ -644,7 +641,6 @@ function Form(): JSX.Element {
                         )}
                     </div>
                 }/>
-
                 {!isDisabledFastLink && <Card step="3" heading='(Optional) Link a photo to your wallet pass' content={
                     <div className="space-y-5">
                         <p>The photo will be saved in your browser (as local & private storage). Your wallet pass will have a link to it for quick showing.</p>
@@ -664,14 +660,12 @@ function Form(): JSX.Element {
                                 </svg>
                             </div>
                         </div>
-
                         <input type='file'
                                id='file2'
                                accept="application/pdf,.png,.jpg,.jpeg,.gif,.webp"
                                ref={inputFile2}
                                style={{display: 'none'}}
                         />
-
                         {(file2) &&
                         <div className="flex items-center space-x-1">
                             <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24"
@@ -691,7 +685,6 @@ function Form(): JSX.Element {
                     </div>
                 }/>
                 }
-
                 {showDoseOption && <Card step={isDisabledFastLink ? '4': '3'} heading={'Choose dose number'} content={
                     <div className="space-y-5">
                         <p>
@@ -714,7 +707,6 @@ function Form(): JSX.Element {
                         </div>
                     </div>
                 } />}
-
                 <Card step={showDoseOption ? (!isDisabledFastLink ? '5' : '4') : (!isDisabledFastLink ? '4': '3')} heading={t('index:addToWalletHeader')} content={
                     <div className="space-y-5">
                         <div>
@@ -724,7 +716,6 @@ function Form(): JSX.Element {
                                 <Check text={t('openSourceTransparent')}/>
                             </ul>
                         </div>
-
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-center justify-items-stretch">
                             <button disabled={saveLoading || isDisabledAppleWallet} id="download" type="submit" value='applewallet' name='action'
                                  className={'outline-apple rounded-md ' + ((!payloadBody || saveLoading || isDisabledAppleWallet)? 'bg-gray-300 cursor-not-allowed':'bg-black cursor-pointer')}>
@@ -732,14 +723,12 @@ function Form(): JSX.Element {
                                     <img style={{height: 40}} src="apple_wallet.svg" alt={t('index:addToWallet')}/>
                                 </div>
                             </button>
-
                             <button id="addToGooglePay" type="button" disabled={saveLoading || isDisabledGooglePay} value='gpay' name='action' onClick={addToGooglePay}
                                 className={'rounded-md ' + ((!payloadBody || saveLoading || isDisabledGooglePay)? 'bg-gray-300 cursor-not-allowed':'bg-black cursor-pointer')}>
                                     <div className="flex justify-center">
                                 <img style={{height: 40}} src="gpay_light.svg" alt={t('index:addToGooglePay')}/>
                                 </div>
                             </button>
-
                             <div id="spin" className={saveLoading ? undefined : "hidden"}>
                                 <svg className="animate-spin h-5 w-5 ml-4" viewBox="0 0 24 24">
                                     <circle className="opacity-0" cx="12" cy="12" r="10" stroke="currentColor"
@@ -761,50 +750,38 @@ function Form(): JSX.Element {
                                 {t('index:refreshButton')}
                             </button>
                         </div>
-            <div id="shc-pass-image" style={{backgroundColor: "white", color: "black", fontFamily: 'Arial', fontSize: 10, width: '350px', padding: '10px', border: '1px solid', margin: '0px'}} hidden>
-                <table style={{verticalAlign: "middle"}}>
-                    <tbody>
-                        <tr>
-                            <td><img src='shield-black.svg' width='50' height='50' /></td>
-                            <td style={{fontSize: 20, width: 280}}>
-                                <span style={{marginLeft: '11px', whiteSpace: 'nowrap'}}><b>COVID-19 Vaccination Card</b></span><br/>
-                                <span style={{marginLeft: '11px'}}><b id='shc-card-origin'></b></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                 </table>
-                <br/>
-                <div style={{fontSize:14, textAlign: 'center'}}>
-                    <span id='shc-card-name' ></span>&nbsp;&nbsp;&nbsp;&nbsp;(<span id='shc-card-dob'></span>)
-                </div>
-                <br/>
-                <table style={{textAlign: "center", width: "100%"}}>
-                    <tbody>
-                        <tr>
-                            <td id='shc-card-vaccine-name-1'></td>&nbsp;&nbsp;<td id='shc-card-vaccine-name-2'></td>
-                        </tr>
-                        <tr>
-                            <td id='shc-card-vaccine-date-1'></td>&nbsp;&nbsp;<td id='shc-card-vaccine-date-2'></td>
-                        </tr>
-                        <tr id='extraRow1a' hidden>
-                            <td id='shc-card-vaccine-name-3'></td>&nbsp;&nbsp;<td id='shc-card-vaccine-name-4'></td>
-                        </tr>
-                        <tr id='extraRow1b' hidden>
-                            <td id='shc-card-vaccine-date-3'></td>&nbsp;&nbsp;<td id='shc-card-vaccine-date-4'></td>
-                        </tr>
-                    </tbody>
-                </table>       
-                <br/>
-
-                <div id='shc-card-vaccine' style={{width:'63%', display:'block', marginLeft: 'auto', marginRight: 'auto'}}></div>
-
-                <div id='shc-qrcode' style={{width:'63%', display:'block', marginLeft: 'auto', marginRight: 'auto'}}></div>
-         
-                <br/>
-            </div>{<a id="shc-pass-img-link" download="vaccination-card.png"><img id="shc-pass-img"/></a>}
+                        <div id="shc-pass-image" style={{backgroundColor: "white", color: "black", fontFamily: 'Arial', fontSize: 10, width: '350px', padding: '10px', border: '1px solid', margin: '0px'}} hidden>
+                            <table style={{verticalAlign: "middle"}}>
+                                <tbody>
+                                    <tr>
+                                        <td><img src='shield-black.svg' width='50' height='50' /></td>
+                                        <td style={{fontSize: 20, width: 280}}>
+                                            <span style={{marginLeft: '11px', whiteSpace: 'nowrap'}}><b>COVID-19 Vaccination Card</b></span><br/>
+                                            <span style={{marginLeft: '11px'}}><b id='shc-card-origin'></b></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            <div style={{fontSize:14, textAlign: 'center'}}>
+                                <span id='shc-card-name' ></span>&nbsp;&nbsp;&nbsp;&nbsp;(<span id='shc-card-dob'></span>)
+                            </div>
+                            <br/>
+                            <table style={{textAlign:'center',width: '100%'}}>
+                                <tbody>
+                                    <tr><td id='shc-card-vaccine-name-1'></td><td id='shc-card-vaccine-name-2'></td></tr>
+                                    <tr><td id='shc-card-vaccine-date-1'></td><td id='shc-card-vaccine-date-2'></td></tr>
+                                    <tr id='extraRow1a' hidden><td id='shc-card-vaccine-name-3'></td><td id='shc-card-vaccine-name-4'></td></tr>
+                                    <tr id='extraRow1b' hidden><td id='shc-card-vaccine-date-3'></td><td id='shc-card-vaccine-date-4'></td></tr>
+                                </tbody>
+                            </table>
+                            <div id='shc-card-vaccine' style={{width:'63%', display:'block', marginLeft: 'auto', marginRight: 'auto'}}></div>
+                            <div id='shc-qrcode' style={{width:'63%', display:'block', marginLeft: 'auto', marginRight: 'auto'}}></div>
+                            <br/>
+                        </div>
+                        <div>{<a id="shc-pass-img-link" download="vaccination-card.png"><img id="shc-pass-img"/></a>}</div>
                     </div>
                 }/>
-
                 <Card step="?" heading={t('index:questions')} content={
                     <div className="space-y-5">
                         <p>{t('index:questionsNote')}</p>
@@ -815,7 +792,6 @@ function Form(): JSX.Element {
                                 <Bullet text={t('index:question3')}/>
                             </ul>
                         </div>
-
                         <div className="flex flex-row items-center justify-start">
                             <button id="faq-redirect" onClick={goToFAQ}
                                 className=" bg-green-600 py-2 px-3 text-white font-semibold rounded-md disabled:bg-gray-400">

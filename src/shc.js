@@ -26,15 +26,17 @@ function getScannedJWS(shcString) {
 }
 
 function verifyJWS(jws, iss) {
+
   const issuer = issuers.find(el => el.iss === iss);
+  console.log("keys=", issuer.keys);
   if (!issuer) {
     error = new Error(`Unknown issuer ${iss}`);
     error.customMessage = true;
     return Promise.reject(error);
-  }
+  } 
   return jose.JWK.asKeyStore({ keys: issuer.keys }).then(function (keyStore) {
+    console.log("ksa", keyStore.all()[0].kid);
     const { verify } = jose.JWS.createVerify(keyStore);
-    //console.log("jws", jws);
     return verify(jws);
   });
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 export default function usePassCount() {
     const [passCount, setPassCount] = useState<string>('');
-    const hitcountHost = 'https://stats.reportmytest.ca';
+    const hitcountHost = 'https://stats.evergreen-labs.com';
 
     useEffect(() => {
         if (passCount.length == 0) {

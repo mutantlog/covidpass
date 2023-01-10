@@ -112,7 +112,7 @@ function Index(): JSX.Element {
                             Nov 18, 2022 update:
                             <br />
                             <br />
-                            We managed to correct the error (No SHC code found for AB, BC, QC and Canadian Forces users). If you need help and don't mind sharing your QR code, I can do some testing manually for you.
+                            We managed to correct the error (No SHC code found for AB, BC, QC and Canadian Forces users).
                             <br />
                             <br />
                             Oct 21, 2022 update:

@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <script>
+        let itemKey;
+
+        function loadItem() {
+
+            if (navigator.userAgent.includes('iPhone') && (navigator.userAgent.indexOf('Safari') < 0)) {
+                document.getElementById('msg').textContent = 'Sorry. For fastlink to work, your iPhone needs to be using Safari as default browser. To change it, you can go to Settings - Chrome/Firefox';
+                return;
+            }
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const item = urlParams.get('item');
+            itemKey = item;
+
+            if (urlParams.has('serialNumber')) {
+                const serialNumber = urlParams.get('serialNumber');
+                itemKey = item + '-' + serialNumber;
+            }
+
+            let dataUrl = localStorage.getItem(itemKey);
+            if (dataUrl) {
+                const imageElement = document.getElementById('image');        // this is a PDF for Safari/iPhone and a PNG for Chrome
+                imageElement.setAttribute('src', dataUrl);
+                document.getElementById('clearButton').hidden = false;
+                document.getElementById('clearAllButton').hidden = false;
+
+            } else {
+                document.getElementById('msg').innerHTML = `Sorry, ${itemKey} not found in local storage.<p />Creating your wallet pass again would likely fix this issue.`;
+            }
+        }
+
+        function clearLocalStorage() {
+            localStorage.removeItem(itemKey);
+            document.getElementById('image').hidden = true;
+            document.getElementById('msg').innerHTML = 'This PDF has been deleted from local storage.';
+            document.getElementById('clearButton').hidden = true;
+        }
+        
+        function clearAllLocalStorage() {
+                localStorage.clear();
+                document.getElementById('image').hidden = true;
+                document.getElementById('msg').innerHTML = 'All local storage cleared.';
+                document.getElementById('clearButton').hidden = true;
+                document.getElementById('clearAllButton').hidden = true;
+        }
+
+    </script>
+    <style>
+        
+        body {
+            font-family: sans-serif;
+        }
+
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+    
+        .big-text {
+            font-size: 32;
+        }
+    </style>
+
+</head>
+
+<body>
+    <img id='image' width="100%" />
+    <br />
+    <input id='clearButton' class='big-text' type="button" hidden value='Remove this PDF' onclick="clearLocalStorage()"></input>&nbsp;&nbsp;&nbsp;
+    <input id='clearAllButton' class='big-text' type="button" hidden value='Remove all PDFs'
+            onclick="clearAllLocalStorage()"></input>
+
+    <div id='msg' class='center big-text' width="100%" />
+
+    <script>
+        loadItem();
+    </script>
+</body>
+
+</html>

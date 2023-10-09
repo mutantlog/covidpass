@@ -1,41 +1,32 @@
-iosHint: On iOS, please use Safari.
 errorClose: Close
-selectCertificate: Select vaccination receipt (PDF)
+selectCertificate: Select or scan vaccination receipt (PDF or image)
 selectCertificateDescription: |
-  Press "Select File", "Browse..." and select the PDF file you have saved in Step 1.
-selectCertificateReminder: |
-  Reminder : Receipts directly downloaded from the provincial web site is required. Emailed copies are not digitally signed and cannot be added to Apple Wallet.
-#stopCamera: Stop Camera
-#startCamera: Start Camera
+  Scan the QR code with your camera, or press "Select File", "Browse..." and select the PDF or picture you saved in Step 1
+stopCamera: Stop Camera
+startCamera: Start Camera
 openFile: Select File
-#foundQrCode: Found QR Code!
-downloadReceipt: Download official receipt from Ontario Ministry of Health
-visit: Visit
-ontarioHealth: Ontario Ministry of Health
-gotoOntarioHealth: Go to Ontario Ministry of Health
-downloadSignedPDF: and enter your information to display your official vaccination receipt. Press the Share Icon at the bottom, "Save As Files" to store it onto your iPhone.
-pickColor: Pick a Color
-pickColorDescription: Pick a background color for your pass.
-colorWhite: white
-colorBlack: black
-colorGrey: grey
-colorGreen: green
-colorIndigo: indigo
-colorBlue: blue
-colorPurple: purple
-colorTeal: teal
+foundQrCode: Found valid Smart Health Card QR Code!
+downloadReceipt: Download official receipt or take a picture of your QR code
+visit: If you need to download your proof-of-vaccination, please select your province below to be redirected to your provincial website.
+reminderNotToRepeat: ALREADY DOWNLOADED YOUR PROOF-OF-VACCINATION? SKIP THIS STEP AND PROCEED DIRECTLY TO STEP 2
 addToWallet: Add to Apple Wallet
-addToWalletHeader: Add to Apple Wallet / Save as Photo
-saveAsPhoto: Save as Photo
-dataPrivacyDescription: |
-  Press the "Add to Wallet" below to import data into Wallet.
-iAcceptThe: I accept the
-privacyPolicy: Privacy Policy
-createdOnDevice: No personal data is sent to the Internet.
-qrCode: QR code is for verification only, with no personal info.
-openSourceTransparent: Source code is free and open for re-use/contributions on GitHub.
-verifierLink: QR code verifier available at https://verifier.vaccine-ontario.ca
+addToGooglePay: Add to Google Pay
+addToWalletHeader: Add to Apple Wallet / Google Pay / Save as Photo
+saveAsPhoto: Save as Photo Card
+createdOnDevice: Your receipt is processed on your device only
+piiNotSent: No personally-identifiable information is stored on servers
+openSourceTransparent: Source code is open for re-use/contributions on GitHub
+verifierLink: QR code verifier available at 
 numPasses: receipts processed since Sept 2, 2021
-demo: Video Demo
-whatsnew: What's New
-#hostedInEU: Hosted in the EU
+iosDemo: Walkthrough video for iPhone users
+androidDemo: Walkthrough video for Android users
+whatsnew: Twitter
+questions: Have Questions?
+saveVaccineCard: To Save your Vaccination Card as a photo, please click on or save the image below
+refreshNote: If the image below does not look correct and you are trying to save the photo, please click the Refresh button below - on some older devices, the image does not appear to draw correctly the first time, but refreshing once or twice should fix it. Sorry for the inconvenience.
+refreshButton: Refresh Photo Card
+questionsNote: Do you want to use this tool but...
+question1: You would like to understand how your data is handled?
+question2: You don't have a health card?
+question3: You have a Red/White OHIP card?
+visitFAQ: Visit our FAQ section for the answers!

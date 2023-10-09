@@ -1,28 +1,11 @@
 import {Constants} from "./constants";
-import {Payload, PayloadBody} from "./payload";
-import {v4 as uuid4} from 'uuid';
-import {BrowserQRCodeSvgWriter} from "@zxing/browser";
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
-import * as Sentry from '@sentry/react';
-
-enum QrFormat {
-    PKBarcodeFormatQR = 'PKBarcodeFormatQR',
-    PKBarcodeFormatPDF417 = 'PKBarcodeFormatPDF417'
-}
-
-enum Encoding {
-    utf8 = "utf-8",
-    iso88591 = "iso-8859-1"
-}
-
-interface QrCode {
-    message: string;
-    format: QrFormat;
-    messageEncoding: Encoding;
-    // altText: string;
-}
+import {PayloadBody} from "./payload";
+import { toBlob, toPng } from 'html-to-image';
+import {QrCode,PassPhotoCommon} from './passphoto-common';
+import { Encoder, QRByte, QRNumeric, ErrorCorrectionLevel } from '@nuintun/qrcode';
 
 export class Photo {
+
     logoText: string = Constants.NAME;
     organizationName: string = Constants.NAME;
     description: string = Constants.NAME;
@@ -33,114 +16,153 @@ export class Photo {
     barcodes: Array<QrCode>;
     barcode: QrCode;
 
-
-
-    static async generatePass(payloadBody: PayloadBody): Promise<Blob> {
+    static async generatePass(payloadBody: PayloadBody, numDose: number): Promise<Blob> {
 
         // Create Payload
         try {
-            const payload: Payload = new Payload(payloadBody);
+            console.log('generatePass');
+            const results = await PassPhotoCommon.preparePayload(payloadBody, false, numDose);
+            
+            const payload = results.payload;
+            const qrCode = results.qrCode;
+            let receipt = results.payload.receipts[numDose];
 
-            payload.serialNumber = uuid4();
-
-            // register record
-
-            const clonedReceipt = Object.assign({}, payload.receipt);
-            delete clonedReceipt.name;
-            delete clonedReceipt.dateOfBirth;
-            clonedReceipt["serialNumber"] = payload.serialNumber;
-            clonedReceipt["type"] = 'photo';
-
-            let requestOptions = {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(clonedReceipt) // body data type must match "Content-Type" header
-            }
-
-            console.log('registering ' + JSON.stringify(clonedReceipt, null, 2));
-            const configResponse = await fetch('/api/config')
-            const verifierHost = (await configResponse.json()).verifierHost
-
-            // const verifierHost = 'https://verifier.vaccine-ontario.ca';
-
-            const response  = await fetch('https://us-central1-grassroot-verifier.cloudfunctions.net/register', requestOptions);
-            const responseJson = await response.json();
-
-            console.log(JSON.stringify(responseJson,null,2));
-
-            if (responseJson["result"] != 'OK') 
-                return Promise.reject();
-
-            const encodedUri = encodeURI(`serialNumber=${payload.serialNumber}&vaccineName=${payload.receipt.vaccineName}&vaccinationDate=${payload.receipt.vaccinationDate}&organization=${payload.receipt.organization}&dose=${payload.receipt.numDoses}`);
-            const qrCodeUrl = `${verifierHost}/verify?${encodedUri}`;
-                
-            // console.log(qrCodeUrl);
-    
-            // Create QR Code Object
-            const qrCode: QrCode = {
-                message: qrCodeUrl,
-                format: QrFormat.PKBarcodeFormatQR,
-                messageEncoding: Encoding.iso88591,
-                // altText : payload.rawData
-
-            }
-
-            // Create photo
-            // const photo: Photo = new Photo(payload, qrCode);
-
-            // const body = domTree.getElementById('main');
             const body = document.getElementById('pass-image');
             body.hidden = false;
+            body.style.backgroundColor = payload.backgroundColor
 
-            if (payload.receipt.numDoses > 1)
-                body.style.backgroundColor = 'green';
-            else
-                body.style.backgroundColor = 'orangered';
-
-            const name = payload.receipt.name;
-            const dateOfBirth = payload.receipt.dateOfBirth;
-            const vaccineName = payload.receipt.vaccineName;
+            const vaccineName = receipt.vaccineName.toLocaleUpperCase();
             let vaccineNameProper = vaccineName.charAt(0) + vaccineName.substr(1).toLowerCase();
-
+    
             if (vaccineName.includes('PFIZER'))
                 vaccineNameProper = 'Pfizer (Comirnaty)'
-
-            if (vaccineName.includes('MODERNA'))
-                vaccineNameProper = 'Moderna (SpikeVax)'    
-                // vaccineNameProper = 'Pfizer (Comirnaty)'
-
-            if (vaccineName.includes('ASTRAZENECA'))
-                vaccineNameProper = 'AstraZeneca (Vaxzevria)'  
-
-            let doseVaccine = "#" + String(payload.receipt.numDoses) + ": " + vaccineNameProper;
     
+            if (vaccineName.includes('MODERNA'))
+                vaccineNameProper = 'Moderna (SpikeVax)'
+    
+            if (vaccineName.includes('ASTRAZENECA') || vaccineName.includes('COVISHIELD'))
+                vaccineNameProper = 'AstraZeneca (Vaxzevria)'  
+                
+            let doseVaccine = "#" + String(receipt.numDoses) + ": " + vaccineNameProper;
 
             document.getElementById('vaccineName').innerText = doseVaccine;
-            document.getElementById('vaccinationDate').innerText = payload.receipt.vaccinationDate;
-            document.getElementById('organization').innerText = payload.receipt.organization;
-            document.getElementById('name').innerText = payload.receipt.name;
-            document.getElementById('dob').innerText = payload.receipt.dateOfBirth;
-
-            const codeWriter = new BrowserQRCodeSvgWriter();
-            const svg = codeWriter.write(qrCode.message,200,200);
-            svg.setAttribute('style','background-color: white');
-            document.getElementById('qrcode').appendChild(svg);
             
-            const blobPromise = toBlob(body);
-            return blobPromise;
+            document.getElementById('vaccinationDate').innerText = receipt.vaccinationDate;
+            document.getElementById('organization').innerText = receipt.organization;
+
+            document.getElementById('name').innerText = receipt.name;
+            document.getElementById('dob').innerText = receipt.dateOfBirth;
+
+            if ((results.payload.rawData.length != 0) && (numDose > 1)) {
+                for (let i = 1; i < numDose; i++) {
+                    
+                    //console.log(i);
+
+                    receipt = results.payload.receipts[i];
+
+                    document.getElementById('extraRow' + i + 'a').hidden = false;
+                    document.getElementById('extraRow' + i + 'b' ).hidden = false;
+                    document.getElementById('vaccinationDate' + i).innerText = receipt.vaccinationDate;
+                    document.getElementById('organization' + i).innerText = receipt.organization;
+                }
+            }
+
+            const qrcode = new Encoder();
+            
+            qrcode.setEncodingHint(true);
+            qrcode.setErrorCorrectionLevel(ErrorCorrectionLevel.L);
+
+            if (qrCode.message.includes('shc:/')) {
+                // Write an SHC code in 2 chunks otherwise it won't render right
+                qrcode.write(new QRByte('shc:/'));
+                qrcode.write(new QRNumeric(qrCode.message.substring(5)));
+            } else {
+                // If this isn't an SHC code, just write it out as a string
+                qrcode.write(qrCode.message);
+            }
+
+            qrcode.make();
+            const qrImage = new Image(220, 220);
+            qrImage.src = qrcode.toDataURL(2, 15);
+            document.getElementById('qrcode').appendChild(qrImage);
+
+            return await toBlob(body);
+
         }   catch (e) {
-            Sentry.captureException(e);
-            return Promise.reject();
+            return Promise.reject(e);
         }
     }
 
-    private constructor(payload: Payload, qrCode: QrCode) {
+    static async generateSHCPass(payloadBody: PayloadBody, shouldRegister = true): Promise<Blob> {
+        // Create Payload
+        try {
+            console.log('generateSHCPass');
+            const results = await PassPhotoCommon.preparePayload(payloadBody, shouldRegister);
+            const qrCode = results.qrCode;
+            const body = document.getElementById('shc-pass-image');
+            body.hidden = false;
+
+            document.getElementById('shc-card-name').innerText = results.payload.shcReceipt.name;
+            document.getElementById('shc-card-dob').innerText = results.payload.shcReceipt.dateOfBirth;
+
+            document.getElementById('shc-card-origin').innerText = results.payload.shcReceipt.cardOrigin;
+
+            const vaccinations = results.payload.shcReceipt.vaccinations;
+            const numDisplay = vaccinations.length <= 4 ? vaccinations.length : 4;
+
+            for (let i = 0; i < numDisplay; i++) {
+
+                document.getElementById(`shc-card-vaccine-name-${i+1}`).innerText = vaccinations[i].vaccineName;
+                document.getElementById(`shc-card-vaccine-date-${i+1}`).innerText = vaccinations[i].vaccinationDate;
+                if (i > 1) {
+                    document.getElementById(`shc-card-vaccine-name-${i+1}`).parentElement.hidden = false;
+                    document.getElementById(`shc-card-vaccine-date-${i+1}`).parentElement.hidden = false;
+                }
+            }
+
+            const qrcode = new Encoder();
+            
+            qrcode.setEncodingHint(true);
+            qrcode.setErrorCorrectionLevel(ErrorCorrectionLevel.L);
+
+            if (qrCode.message.includes('shc:/')) {
+                // Write an SHC code in 2 chunks otherwise it won't render right
+                qrcode.write(new QRByte('shc:/'));
+                qrcode.write(new QRNumeric(qrCode.message.substring(5)));
+            } else {
+                // If this isn't an SHC code, just write it out as a string
+                qrcode.write(qrCode.message);
+            }
+
+            qrcode.make();
+            const qrImage = new Image(220, 220);
+            qrImage.src = qrcode.toDataURL(2, 15);
+            document.getElementById('shc-qrcode').appendChild(qrImage);
+
+            // Fix for Safari photo rendering issue?
+            const pngData =  await toPng(body);
+            document.getElementById('shc-pass-img')['src'] = pngData;
+            const imgLink = document.getElementById('shc-pass-img-link');
+            imgLink['href'] = pngData;
+
+            const selectedReceipt = payloadBody.shcReceipt;
+            const filenameDetails = selectedReceipt.cardOrigin.replace(' ', '-');
+            const passName = selectedReceipt.name.replace(' ', '-');
+            imgLink['download'] = `grassroots-receipt-${passName}-${filenameDetails}.png`;
+
+            const retBlob = await toBlob(body);
+            
+            body.hidden = true;
+            
+            return retBlob;
+
+        }   catch (e) {
+            return Promise.reject(e);
+        }
+    }
+
+    private constructor() {
 
         // make a png in buffer using the payload
     }
-
-
-
 }
